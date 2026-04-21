@@ -7,6 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
+import { createClient } from "@supabase/supabase-js";
 import { AuthAPI } from "../services/api";
 
 const firebaseConfig = {
@@ -18,11 +19,16 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app      = initializeApp(firebaseConfig);
-const auth     = getAuth(app);
-const provider = new GoogleAuthProvider();
+const firebaseApp = initializeApp(firebaseConfig);
+const auth        = getAuth(firebaseApp);
+const provider    = new GoogleAuthProvider();
 provider.addScope("profile");
 provider.addScope("email");
+
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const AuthContext = createContext(null);
 
@@ -31,60 +37,146 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
 
+  function buildSupabaseUser(session) {
+    if (!session?.user) return null;
+    const u = session.user;
+    return {
+      uid:      u.id,
+      email:    u.email,
+      name:     u.user_metadata?.full_name || u.email,
+      photoURL: u.user_metadata?.avatar_url || null,
+      provider: "supabase",
+    };
+  }
+
   useEffect(() => {
-  const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-    if (firebaseUser) {
-      try {
-        const token = await firebaseUser.getIdToken();
-        localStorage.setItem("orbit_token", token);
+    let resolved = false;
 
-        setUser({
-          uid:      firebaseUser.uid,
-          email:    firebaseUser.email,
-          name:     firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL,
-        });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        const sbUser = buildSupabaseUser(session);
+        setUser(sbUser);
+        localStorage.setItem("orbit_token", session.access_token);
+        resolved = true;
+        setLoading(false);
+      }
+    });
 
-        AuthAPI.verify(token)
-          .then((profile) => {
-            setUser((prev) => ({ ...prev, ...profile, photoURL: firebaseUser.photoURL }));
-          })
-          .catch((e) => {
-            console.error("AuthAPI.verify failed:", e);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          const sbUser = buildSupabaseUser(session);
+          setUser(sbUser);
+          localStorage.setItem("orbit_token", session.access_token);
+        } else if (!auth.currentUser) {
+          setUser(null);
+          localStorage.removeItem("orbit_token");
+        }
+        if (!resolved) setLoading(false);
+      }
+    );
+
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const token = await firebaseUser.getIdToken();
+          localStorage.setItem("orbit_token", token);
+          setUser({
+            uid:      firebaseUser.uid,
+            email:    firebaseUser.email,
+            name:     firebaseUser.displayName,
+            photoURL: firebaseUser.photoURL,
+            provider: "google",
           });
 
-      } catch (e) {
-        console.error("getIdToken failed:", e);
-        setUser(null);
+          AuthAPI.verify(token)
+            .then((profile) => {
+              setUser((prev) => ({
+                ...prev,
+                ...profile,
+                photoURL: firebaseUser.photoURL,
+                provider: "google",
+              }));
+            })
+            .catch((e) => console.error("AuthAPI.verify failed:", e));
+        } catch (e) {
+          console.error("Firebase getIdToken failed:", e);
+        }
       }
-    } else {
-      localStorage.removeItem("orbit_token");
-      setUser(null);
-    }
-    setLoading(false);
-  });
-  return unsub;
-}, []);
+      if (!resolved) {
+        resolved = true;
+        setLoading(false);
+      }
+    });
 
-  const signInWithGoogle = async (onSuccess) => {
+    return () => {
+      unsub();
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const signInWithGoogle = async () => {
     setError(null);
     try {
       await signInWithPopup(auth, provider);
-      onSuccess?.();
     } catch (e) {
       setError(e.message);
       throw e;
     }
   };
 
+  const signInWithEmail = async (email, password) => {
+    setError(null);
+    const { data, error: sbErr } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (sbErr) {
+      setError(sbErr.message);
+      throw sbErr;
+    }
+    return data;
+  };
+
+  const registerWithEmail = async (email, password, fullName) => {
+    setError(null);
+    const { data, error: sbErr } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/auth?confirmed=true`,
+      },
+    });
+    if (sbErr) {
+      setError(sbErr.message);
+      throw sbErr;
+    }
+    return data;
+  };
+
   const logout = async () => {
-    await signOut(auth);
+    const currentProvider = user?.provider;
+    if (currentProvider === "google") {
+      await signOut(auth);
+    } else {
+      await supabase.auth.signOut();
+    }
     localStorage.removeItem("orbit_token");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, signInWithGoogle, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      error,
+      setError,
+      signInWithGoogle,
+      signInWithEmail,
+      registerWithEmail,
+      logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );
