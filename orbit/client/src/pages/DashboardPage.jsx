@@ -1,5 +1,6 @@
 import { useState, useMemo }  from "react";
 import { useNavigate }        from "react-router-dom";
+import { useAuth }            from "../context/AuthContext";
 import { useDisease }         from "../hooks/useDisease";
 
 const DISEASES = [
