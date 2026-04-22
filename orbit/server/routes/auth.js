@@ -1,8 +1,3 @@
-/**
- * ORBIT Auth Routes
- * Decodes both Firebase (Google) JWTs and Supabase JWTs.
- * No external SDK needed — both use standard JWT format.
- */
 const express = require("express");
 const router  = express.Router();
 
@@ -16,8 +11,6 @@ function decodeJWT(token) {
   }
 }
 
-// POST /api/auth/verify
-// Accepts both Firebase ID tokens and Supabase access tokens
 router.post("/verify", (req, res) => {
   const { idToken } = req.body;
   if (!idToken) return res.status(400).json({ error: "idToken required" });
@@ -25,8 +18,6 @@ router.post("/verify", (req, res) => {
   const decoded = decodeJWT(idToken);
   if (!decoded) return res.status(401).json({ error: "Invalid token" });
 
-  // Supabase tokens use "sub" as uid and have "email" directly
-  // Firebase tokens use "user_id" as uid
   const uid   = decoded.user_id || decoded.sub;
   const email = decoded.email   || decoded.email_verified || "";
   const name  = decoded.name
@@ -39,7 +30,6 @@ router.post("/verify", (req, res) => {
   res.json({ uid, email, name, picture, role: "viewer" });
 });
 
-// GET /api/auth/me
 router.get("/me", (req, res) => {
   const token   = (req.headers.authorization || "").replace("Bearer ", "");
   if (!token) return res.status(401).json({ error: "Unauthorized" });
