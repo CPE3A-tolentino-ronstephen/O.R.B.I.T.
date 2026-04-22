@@ -645,7 +645,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="landing-footer">
-        <p>© 2026 O.R.B.I.T. — orbitdetection.com · Outbreak Reporting &amp; Biological Intelligence Tracker</p>
+        <p>© 2026 O.R.B.I.T.|Outbreak Reporting & Biological Intelligence Tracker</p>
         <div className="footer-links">
         <p>© BULACAN STATE UNIVERSITY</p>
 
