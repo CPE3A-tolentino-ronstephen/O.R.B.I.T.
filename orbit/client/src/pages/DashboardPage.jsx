@@ -27,6 +27,14 @@ function fmtPct(n) {
   return `${Number(n).toFixed(2)}%`;
 }
 
+function fmtTime(ts) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleString("en-US", {
+    month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+}
+
 function StatCard({ label, value, sub, accent, loading }) {
   return (
     <div className="card stat-card" style={{ "--accent": accent || "var(--orbit-green)" }}>
@@ -135,18 +143,30 @@ function DetailPanel({ selected, isOwid, activeDisease, onClose }) {
   const isHiv = activeDisease === "hiv";
 
   const baseRows = [
-    { label: isHiv ? "New Infections" : "Total Cases", val: fmt(selected.cases) },
-    { label: isHiv ? "Annual Deaths"  : "Deaths",      val: fmt(selected.deaths) },
-    { label: "Mortality Rate",                          val: fmtPct(selected.caseFatalityRate) },
-    ...(!isHiv ? [{ label: "Cases / 1M pop", val: fmt(selected.casesPerMillion) }] : []),
+    {
+      label: isHiv ? "New Infections"  : "Total Cases",
+      val:   fmt(selected.cases),
+    },
+    {
+      label: isHiv ? "Annual Deaths"   : "Deaths",
+      val:   fmt(selected.deaths),
+    },
+    {
+      label: "Mortality Rate",
+      val:   fmtPct(selected.caseFatalityRate),
+    },
+    ...(!isHiv
+      ? [{ label: "Cases / 1M pop", val: fmt(selected.casesPerMillion) }]
+      : []
+    ),
   ];
 
   const covidRows = [
-    { label: "Recovered",       val: fmt(selected.recovered) },
-    { label: "Active Cases",    val: fmt(selected.active) },
-    { label: "Critical",        val: fmt(selected.critical) },
-    { label: "Deaths / 1M pop", val: fmt(selected.deathsPerMillion) },
-    { label: "Data Year",       val: selected.dataYear ? String(selected.dataYear) : "—" },
+    { label: "Recovered",        val: fmt(selected.recovered) },
+    { label: "Active Cases",     val: fmt(selected.active) },
+    { label: "Critical",         val: fmt(selected.critical) },
+    { label: "Deaths / 1M pop",  val: fmt(selected.deathsPerMillion) },
+    { label: "Data Year",        val: selected.dataYear ? String(selected.dataYear) : "—" },
   ];
 
   const owidRows = [
@@ -154,7 +174,9 @@ function DetailPanel({ selected, isOwid, activeDisease, onClose }) {
     { label: "Source",    val: selected.source ?? "OWID / WHO" },
   ];
 
-  const rows = isOwid ? [...baseRows, ...owidRows] : [...baseRows, ...covidRows];
+  const rows = isOwid
+    ? [...baseRows, ...owidRows]
+    : [...baseRows, ...covidRows];
 
   return (
     <>
@@ -177,6 +199,7 @@ function DetailPanel({ selected, isOwid, activeDisease, onClose }) {
           aria-label="Close"
         >✕</button>
       </div>
+
       {rows.map(({ label, val }) => (
         <div className="detail-row" key={label}>
           <span className="detail-row-label">{label}</span>
@@ -188,15 +211,21 @@ function DetailPanel({ selected, isOwid, activeDisease, onClose }) {
 }
 
 export default function DashboardPage() {
-  const { user }   = useAuth();
-  const navigate   = useNavigate();
+  const navigate = useNavigate();
 
   const [activeDisease, setActiveDisease] = useState("covid19");
   const [search,        setSearch]        = useState("");
   const [sortBy,        setSortBy]        = useState("cases");
   const [selected,      setSelected]      = useState(null);
 
-  const { global, countries, loading, error, isOwid, refetch } = useDisease(activeDisease);
+  const {
+    global,
+    countries,
+    loading,
+    error,
+    isOwid,
+    refetch,
+  } = useDisease(activeDisease);
 
   const handleDiseaseChange = (key) => {
     setActiveDisease(key);
@@ -211,23 +240,22 @@ export default function DashboardPage() {
     return [...searched].sort((a, b) => (b[sortBy] ?? 0) - (a[sortBy] ?? 0));
   }, [countries, search, sortBy]);
 
-  const hour     = new Date().getHours();
+  const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  const isHiv    = activeDisease === "hiv";
+
+  const isHiv = activeDisease === "hiv";
 
   const globalStats = useMemo(() => {
     if (!global) return {};
     const dataYear = global.dataYear ?? global.year ?? null;
     return {
-      cases:     fmt(global.cases),
-      deaths:    fmt(global.deaths),
-      cfr:       fmtPct(global.caseFatalityRate),
+      cases:    fmt(global.cases),
+      deaths:   fmt(global.deaths),
+      cfr:      fmtPct(global.caseFatalityRate),
       recovered: fmt(global.recovered),
-      active:    fmt(global.active),
-      critical:  fmt(global.critical),
-      todayCases:  fmt(global.todayCases),
-      todayDeaths: fmt(global.todayDeaths),
-      dataYear:  dataYear ? `Data as of ${dataYear}` : null,
+      active:   fmt(global.active),
+      critical: fmt(global.critical),
+      dataYear: dataYear ? `Data as of ${dataYear}` : null,
     };
   }, [global]);
 
@@ -322,12 +350,9 @@ export default function DashboardPage() {
         }
       `}</style>
 
-      {/* Header */}
       <div className="dash-header">
         <div>
-          <div className="dash-greeting">
-            {greeting}, {user?.name?.split(" ")[0] || "Researcher"} 👋
-          </div>
+          <div className="dash-greeting">{greeting}, Researcher 👋</div>
           <div className="dash-title">Global Outbreak Intelligence</div>
         </div>
         <div className="disease-tabs">
@@ -343,7 +368,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Error */}
       {error && (
         <div className="error-bar">
           <span>⚠ {error}</span>
@@ -357,19 +381,18 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* KPI Stats */}
       <div className="stats-grid">
         <StatCard
           label={isHiv ? "New Infections" : "Total Cases"}
           value={globalStats.cases}
-          sub={globalStats.todayCases ? `+${globalStats.todayCases} today` : globalStats.dataYear}
+          sub={globalStats.dataYear}
           accent="#3b82f6"
           loading={loading}
         />
         <StatCard
           label={isHiv ? "Annual Deaths" : "Total Deaths"}
           value={globalStats.deaths}
-          sub={globalStats.todayDeaths ? `+${globalStats.todayDeaths} today` : globalStats.dataYear}
+          sub={globalStats.dataYear}
           accent="#dc2626"
           loading={loading}
         />
@@ -382,6 +405,7 @@ export default function DashboardPage() {
             loading={loading}
           />
         )}
+  
         {!isOwid && (
           <>
             <StatCard
@@ -409,8 +433,8 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Body */}
       <div className="dash-body">
+
         <div className="card table-card" style={{ padding: 0 }}>
           <div className="table-toolbar">
             <div className="table-title">
@@ -463,8 +487,12 @@ export default function DashboardPage() {
                   <tr>
                     <th>#</th>
                     <th>Country</th>
-                    <th className="hide-mobile">{isHiv ? "New Infections" : "Cases"}</th>
-                    <th className="hide-mobile">{isHiv ? "Annual Deaths" : "Deaths"}</th>
+                    <th className="hide-mobile">
+                      {isHiv ? "New Infections" : "Cases"}
+                    </th>
+                    <th className="hide-mobile">
+                      {isHiv ? "Annual Deaths" : "Deaths"}
+                    </th>
                     <th className="hide-mobile">Mortality</th>
                     <th>Risk</th>
                   </tr>
@@ -499,8 +527,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Right Panel */}
         <div className="detail-panel">
+
           <div className="map-cta">
             <div style={{ fontSize: "1.5rem" }}>🗺</div>
             <h4>View Interactive Map</h4>
@@ -522,6 +550,7 @@ export default function DashboardPage() {
               onClose={() => setSelected(null)}
             />
           </div>
+
         </div>
       </div>
     </div>
