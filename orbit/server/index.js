@@ -15,8 +15,10 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     if (
-      origin.endsWith(".vercel.app") ||
-      origin.endsWith(".onrender.com") ||
+      origin.endsWith(".vercel.app")    ||
+      origin.endsWith(".onrender.com")  ||
+      origin === "https://orbitdetection.com"     ||
+      origin === "https://www.orbitdetection.com" ||
       origin === process.env.CLIENT_ORIGIN
     ) {
       return callback(null, true);
