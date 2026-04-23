@@ -219,7 +219,7 @@ export default function StatisticsPage() {
           return lastLabel ?? null;
         }
         return src.updated
-          ? new Date(src.updated).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+          ? new Date(src.updated).toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" })
           : null;
       })(),
     };
@@ -242,7 +242,28 @@ export default function StatisticsPage() {
     return 4;
   })();
 
-  const isMpox = activeDisease === "mpox";
+  // Custom label renderer for pie chart
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 1.1;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    
+    if (percent < 0.05) return null;
+    
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="#374151" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        style={{ fontSize: '11px', fontWeight: 500, fontFamily: 'var(--font-body)' }}
+      >
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <div className="stats-page page-enter">
@@ -745,8 +766,52 @@ export default function StatisticsPage() {
               )}
             </>
           ) : (
-            /* Pie chart for continent breakdown - full width */
-            <></>
+            <>
+              <div className="chart-title">Cases by Continent</div>
+              {loading ? <NoData icon="" text="Loading…" /> : continentPie.length === 0 ? <NoData icon="" text="No continent data available" /> : (
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <Pie 
+                      data={continentPie} 
+                      cx="50%" 
+                      cy="50%" 
+                      outerRadius={90} 
+                      dataKey="value" 
+                      nameKey="name"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                    >
+                      {continentPie.map(({ name }, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={CONTINENT_COLORS[name] ?? CONTINENT_COLORS.Other}
+                          stroke="white"
+                          strokeWidth={2}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => fmt(value)} 
+                      contentStyle={{ 
+                        fontFamily:"var(--font-body)", 
+                        fontSize:".82rem",
+                        borderRadius:8,
+                        border:"1px solid #e5e7eb",
+                        boxShadow:"0 4px 16px rgba(0,0,0,.1)"
+                      }} 
+                    />
+                    <Legend 
+                      wrapperStyle={{ 
+                        fontSize:".8rem", 
+                        fontFamily:"var(--font-body)",
+                        paddingTop:"1rem"
+                      }}
+                      iconType="circle"
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </>
           )}
         </div>
 
