@@ -89,7 +89,7 @@ export default function Header({ onToggleSidebar }) {
         .header-time {
           font-size: 12.48px; 
           color: var(--gray-400);
-          font-family: var(--font-mono);
+          font-family: var(--font-sana);
         }
         
         @media (max-width: 600px) { 
