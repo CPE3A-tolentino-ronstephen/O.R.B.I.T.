@@ -234,6 +234,7 @@ export default function LandingPage() {
           overflow: hidden; 
         }
 
+
         .hero {
           flex: 1;
           display: flex;
