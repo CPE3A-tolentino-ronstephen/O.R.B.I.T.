@@ -178,8 +178,8 @@ export default function StatisticsPage() {
         return lastLabel ?? null;
       }
         return src.updated
-        ? new Date(src.updated).toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" })
-        : null;
+          ? new Date(src.updated).toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" })
+          : null;
       })(),
     };
   }, [globalResolved, global, isHiv]);
