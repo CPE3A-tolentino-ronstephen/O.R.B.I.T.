@@ -14,7 +14,7 @@ export default function AppLayout() {
           display: flex;
           height: 100vh;
           overflow: hidden;
-          background: var(--off-white);
+          background: transparent;
         }
         .main-area {
           flex: 1;
@@ -22,11 +22,14 @@ export default function AppLayout() {
           flex-direction: column;
           overflow: hidden;
           min-width: 0;
+          background: transparent;
         }
+
         .main-content {
           flex: 1;
           overflow-y: auto;
           padding: 24px;
+          background: transparent;
         }
         @media (max-width: 768px) {
           .main-content { 
