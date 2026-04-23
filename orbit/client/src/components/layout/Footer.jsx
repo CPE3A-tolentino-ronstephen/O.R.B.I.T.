@@ -18,7 +18,7 @@ export default function Footer() {
         .footer-left {
           font-size: 11.52px;
           color: var(--gray-400);
-          font-family: var(--font-mono);
+          font-family: var(--font-sana);
           display: flex; 
           align-items: center; 
           gap: 8px;
@@ -39,10 +39,10 @@ export default function Footer() {
         }
         
         .footer-link {
-          font-size: 11.52px; 
+          font-size: 11.52px;
           color: var(--gray-400);
-          text-decoration: none; 
-          font-family: var(--font-mono);
+          text-decoration: none;
+          font-family: var(--font-sana);
           transition: color .15s;
         }
         
@@ -57,11 +57,11 @@ export default function Footer() {
 
       <div className="footer-left">
         <span className="footer-dot" />
-        © {year} O.R.B.I.T. | All Rights Reserved.
+        © {year} O.R.B.I.T. | Bulacan State University | All Rights Reserved.
       </div>
       <div className="footer-right">
         <a href="https://disease.sh" target="_blank" rel="noreferrer" className="footer-link">disease.sh</a>
-        <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer" className="footer-link">WHO GHO</a>
+        <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer" className="footer-link">WHO | GHO</a>
       </div>
     </footer>
   );
