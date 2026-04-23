@@ -507,11 +507,9 @@ export default function LandingPage() {
           box-shadow: 0 2px 8px rgba(228, 218, 218, 0.1);
         }
         .btn-ghost:hover {
-          border-color: #000;
-          color: white;
-          background: #000;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-          transform: translateY(-2px);
+          border-color: var(--orbit-green);
+          color: var(--orbit-green);
+          background: rgba(16, 185, 129, 0.05);
         }
 
         @media (max-width: 768px) {
