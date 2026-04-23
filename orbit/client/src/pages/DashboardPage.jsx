@@ -533,13 +533,13 @@ export default function DashboardPage() {
           <div className="map-cta">
             <div style={{ fontSize: "1.5rem" }}>🗺</div>
             <h4>View Interactive Map</h4>
-            <p>See outbreak heatmap with risk coloring across all countries</p>
+            <p>Analyze global outbreaks with color-coded risk data.</p>
             <button
               className="btn btn-primary"
               style={{ width: "100%" }}
               onClick={() => navigate("/map")}
             >
-              Open Live Map →
+              Open Live Map
             </button>
           </div>
 
