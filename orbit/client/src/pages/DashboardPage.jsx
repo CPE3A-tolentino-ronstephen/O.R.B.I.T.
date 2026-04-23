@@ -267,7 +267,7 @@ export default function DashboardPage() {
           display: flex; align-items: flex-end; justify-content: space-between;
           flex-wrap: wrap; gap: 1rem;
         }
-        .dash-greeting { font-size: .85rem; color: var(--gray-400); margin-bottom: .25rem; }
+        .dash-greeting { font-size: .85rem; color: var(--black-400); margin-bottom: .25rem; }
         .dash-title { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); letter-spacing: -.02em; }
         .disease-tabs { display: flex; gap: .5rem; flex-wrap: wrap; }
         .disease-tab {
