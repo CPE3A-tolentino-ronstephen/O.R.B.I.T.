@@ -222,6 +222,19 @@ export default function LandingPage() {
         .lnav-sub { font-size: 11px; color: var(--gray-400); font-family: var(--font-mono); }
         .lnav-actions { display: flex; gap: 12px; align-items: center; }
 
+        .auth-logo {
+          width: 48px; 
+          height: 48px;
+          background: linear-gradient(135deg, var(--orbit-green), var(--orbit-green-dim));
+          border-radius: 13px;
+          display: flex; 
+          align-items: center; 
+          justify-content: center;
+          box-shadow: 0 4px 24px rgba(16,185,129,.4);
+          overflow: hidden; 
+        }
+
+
         .hero {
           flex: 1;
           display: flex;
@@ -543,7 +556,9 @@ export default function LandingPage() {
   
       <nav className="lnav">
         <div className="lnav-brand">
-          <div className="lnav-logo">🛰</div>
+          <div className="auth-logo">
+            <img src="/logo.png" alt="O.R.B.I.T. Logo" />
+          </div>
           <div>
             <div className="lnav-title">O.R.B.I.T.</div>
             <div className="lnav-sub">orbitdetection.com</div>
@@ -633,6 +648,16 @@ export default function LandingPage() {
      
             <h3>Multi-Disease Tracking</h3>
             <p>Switch between historical known diseases like COVID-19, Mpox, HIV/AIDS, and more.</p>
+          </div>
+          <div className="feature-card">            
+            
+            <h3>Global Risk Intelligence</h3>
+            <p>A unified risk score is computed for every country using various case ratio to give an at-a-glance picture of where biological threats are most severe worldwide.</p>
+          </div>
+          <div className="feature-card">            \
+            
+            <h3>Historical Trend Analysis</h3>
+            <p>Explore disease progression over time with timeline charts. Compare case fatality rates, recovery trajectories, and active case surges across any tracked disease.</p>
           </div>
           <div className="feature-card">
         
