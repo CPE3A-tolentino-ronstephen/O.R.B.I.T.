@@ -50,7 +50,7 @@ export default function AuthPage() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    if (!email || !password) return setLocalErr("Please fill in all fields.");
+    if (!email || !password) return setLocalErr(" Please fill in all fields.");
     setSigning(true);
     setLocalErr("");
     try {
@@ -85,7 +85,9 @@ export default function AuthPage() {
 
   if (loading) return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", flexDirection: "column", gap: 16 }}>
-      <div style={{ fontSize: 40 }}>🛰</div>
+      <div style={{ fontSize: 40 }}>
+        <link rel="icon" type="image/png" href="/favicon1.png" />
+      </div>
       <p style={{ fontFamily: "var(--font-display)", color: "var(--orbit-green)", fontSize: 16 }}>
         Initializing O.R.B.I.T...
       </p>
@@ -104,8 +106,8 @@ export default function AuthPage() {
           background: var(--white);
         }
 
-        .auth-panel-left {
-          background: var(--gray-900);
+         .auth-panel-left {
+          background: var(--off-white);
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -125,11 +127,16 @@ export default function AuthPage() {
           position: absolute;
           inset: 0;
           background-image:
-            linear-gradient(rgba(16,185,129,.07) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16,185,129,.07) 1px, transparent 1px);
+            linear-gradient(rgba(16, 185, 129, 0.25) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 185, 129, 0.25) 1px, transparent 1px);
           background-size: 40px 40px;
+          mask-image: radial-gradient(circle at center, black 40%, transparent 95%);
+          -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 95%);
+          
+          pointer-events: none; 
         }
-        .auth-brand {
+
+         .auth-brand {
           position: relative;
           z-index: 1;
           display: flex;
@@ -137,27 +144,34 @@ export default function AuthPage() {
           gap: 14px;
         }
         .auth-logo {
-          width: 48px;
+          width: 48px; 
           height: 48px;
           background: linear-gradient(135deg, var(--orbit-green), var(--orbit-green-dim));
           border-radius: 13px;
-          display: flex;
-          align-items: center;
+          display: flex; 
+          align-items: center; 
           justify-content: center;
-          font-size: 24px;
           box-shadow: 0 4px 24px rgba(16,185,129,.4);
+          overflow: hidden; 
         }
+
+        .auth-logo img {
+          width: 100%; 
+          height: 100%;
+          object-fit: contain;
+        }
+
         .auth-brand-text strong {
           display: block;
           font-family: var(--font-display);
           font-size: 18px;
           font-weight: 800;
-          color: white;
+          color: var(--gray-900);
           letter-spacing: 1px;
         }
         .auth-brand-text span {
           font-size: 11px;
-          color: rgba(255,255,255,.4);
+          color: var(--orbit-green-dim);
           font-family: var(--font-mono);
           text-transform: uppercase;
           letter-spacing: 1.6px;
@@ -169,7 +183,7 @@ export default function AuthPage() {
         .auth-hero-text h2 {
           font-size: 40px;
           font-weight: 800;
-          color: white;
+          color: var(--gray-900);
           line-height: 1.1;
           margin-bottom: 16px;
           letter-spacing: -1px;
@@ -179,11 +193,12 @@ export default function AuthPage() {
           color: var(--orbit-green-light);
         }
         .auth-hero-text p {
-          color: rgba(255,255,255,.55);
+          color: var(--gray-700);
           font-size: 15px;
           line-height: 1.7;
           max-width: 380px;
         }
+
         .auth-stats {
           position: relative;
           z-index: 1;
@@ -201,9 +216,9 @@ export default function AuthPage() {
           color: var(--orbit-green-light);
           display: block;
         }
-        .auth-stat-label {
+          .auth-stat-label {
           font-size: 11px;
-          color: rgba(255,255,255,.4);
+          color: var(--orbit-green-dim);
           font-family: var(--font-mono);
           text-transform: uppercase;
           letter-spacing: 1.3px;
@@ -213,9 +228,9 @@ export default function AuthPage() {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 48px 40px;
-          border-left: 1px solid var(--border);
-          overflow-y: auto;
+          padding: 3rem 2.5rem;
+          background: var(--orbit-green-dim);
+          border-left: 0px !important; 
         }
 
         .auth-tabs {
@@ -256,12 +271,15 @@ export default function AuthPage() {
           font-size: 26px;
           font-weight: 800;
           color: var(--gray-900);
+          text-align: center;
           margin-bottom: 6px;
           letter-spacing: -0.5px;
         }
+
         .auth-form-header p {
-          color: var(--gray-500);
+          color: var(--gray-200);
           font-size: 14px;
+          text-align: center;
         }
 
         .google-btn {
@@ -303,7 +321,7 @@ export default function AuthPage() {
           align-items: center;
           gap: 12px;
           margin-bottom: 20px;
-          color: var(--gray-400);
+          color: var(--gray-200);
           font-size: 12px;
           font-family: var(--font-mono);
           text-transform: uppercase;
@@ -326,7 +344,7 @@ export default function AuthPage() {
         .form-label {
           font-size: 13px;
           font-weight: 600;
-          color: var(--gray-700);
+          color: var(--gray-300);
           font-family: var(--font-body);
         }
         .form-input {
@@ -374,8 +392,8 @@ export default function AuthPage() {
         .submit-btn {
           width: 100%;
           padding: 13px 24px;
-          background: var(--orbit-green);
-          color: white;
+          background: var(--gray-900);
+          color: var(--off-white);
           border: none;
           border-radius: var(--radius-sm);
           font-family: var(--font-body);
@@ -383,14 +401,14 @@ export default function AuthPage() {
           font-weight: 700;
           cursor: pointer;
           transition: all 0.2s;
-          margin-top: 6px;
+          margin-top: 10px;
           box-shadow: var(--shadow-green);
           letter-spacing: 0.2px;
         }
         .submit-btn:hover:not(:disabled) {
-          background: var(--orbit-green-dim);
+          background: var(--gray-700);
           transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(16,185,129,.32);
+          box-shadow: 0 6px 24px rgba(14, 82, 59, 0.32);
         }
         .submit-btn:disabled {
           opacity: 0.6;
@@ -423,22 +441,29 @@ export default function AuthPage() {
         }
         .pass-hint {
           font-size: 12px;
-          color: var(--gray-400);
+          color: var(--gray-300);
           margin-top: 4px;
           font-family: var(--font-mono);
         }
 
         .auth-back {
           display: inline-flex;
-          align-items: center;
           gap: 6px;
-          color: var(--gray-400);
-          font-size: 13px;
+          color: var(--off-white);
           text-decoration: none;
-          margin-top: 24px;
           transition: color 0.15s;
+          width: 100%;
+          font-weight: 500;
+          font-size: 15px;
+          font-family: var(--font-body);
+          justify-content: left; 
+          margin-top: 15px;
         }
-        .auth-back:hover { color: var(--orbit-green); }
+
+        .auth-back:hover { 
+          color: var(--gray-900); 
+        }
+
 
         @media (max-width: 768px) {
           .auth-page { grid-template-columns: 1fr; }
@@ -451,7 +476,9 @@ export default function AuthPage() {
       <div className="auth-panel-left">
         <div className="auth-panel-left-grid" />
         <div className="auth-brand">
-          <div className="auth-logo">🛰</div>
+           <div className="auth-logo">
+            <img src="/logo.png" alt="O.R.B.I.T. Logo" />
+           </div>
           <div className="auth-brand-text">
             <strong>O.R.B.I.T.</strong>
             <span>THE PULSE OF WORLD HEALTH AT YOUR FINGERTIPS</span>
@@ -499,7 +526,7 @@ export default function AuthPage() {
 
         {}
         <div className="auth-form-header">
-          <h3>{tab === "signin" ? "Welcome back" : "Join O.R.B.I.T."}</h3>
+          <h3>{tab === "signin" ? "Welcome back!" : "Join O.R.B.I.T."}</h3>
           <p>
             {tab === "signin"
               ? "Sign in to access your surveillance dashboard"
@@ -507,14 +534,6 @@ export default function AuthPage() {
             }
           </p>
         </div>
-
-        {}
-        {displayErr && (
-          <div className="auth-error">⚠ {displayErr}</div>
-        )}
-        {success && (
-          <div className="auth-success">✓ {success}</div>
-        )}
 
         {}
         <button className="google-btn" onClick={handleGoogle} disabled={signing}>
@@ -556,18 +575,21 @@ export default function AuthPage() {
                   autoComplete="current-password"
                   disabled={signing}
                 />
-                <button
-                  type="button"
-                  className="pass-toggle"
-                  onClick={() => setShowPass(s => !s)}
-                  tabIndex={-1}
-                >
-                  {showPass ? "🙈" : "👁"}
+                <button type="button" className="pass-toggle" onClick={() => setShowPass((s) => !s)} tabIndex={-1}>
+                   <img src={showPass ? "/eye.png" : "/show.png"} className="toggle-icon" />
                 </button>
+        
               </div>
             </div>
+            {}
+            {displayErr && (
+              <div className="auth-error">{displayErr}</div>
+            )}
+            {success && (
+              <div className="auth-success">{success}</div>
+            )}
             <button className="submit-btn" type="submit" disabled={signing}>
-              {signing ? "Signing in..." : "Sign In →"}
+              {signing ? "Signing in..." : "Sign In"}
             </button>
           </form>
         )}
@@ -611,16 +633,11 @@ export default function AuthPage() {
                   autoComplete="new-password"
                   disabled={signing}
                 />
-                <button
-                  type="button"
-                  className="pass-toggle"
-                  onClick={() => setShowPass(s => !s)}
-                  tabIndex={-1}
-                >
-                  {showPass ? "🙈" : "👁"}
+                <button type="button" className="pass-toggle" onClick={() => setShowPass((s) => !s)} tabIndex={-1}>
+                   <img src={showPass ? "/eye.png" : "/show.png"} className="toggle-icon" />
                 </button>
               </div>
-              <div className="pass-hint">At least 8 characters</div>
+              
             </div>
             <div className="form-field">
               <label className="form-label">Confirm password</label>
@@ -635,7 +652,7 @@ export default function AuthPage() {
               />
             </div>
             <button className="submit-btn" type="submit" disabled={signing}>
-              {signing ? "Creating account..." : "Create Account →"}
+              {signing ? "Creating account..." : "Create Account"}
             </button>
           </form>
         )}
