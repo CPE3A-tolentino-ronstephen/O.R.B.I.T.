@@ -334,19 +334,15 @@ export default function MapPage() {
             maxBounds={[[-90, -180], [90, 180]]}
             style={{ width:"100%", height:"100%", minHeight:520 }}
           >
-            {/*
-              Stadia Maps — Stamen Toner Lite
-              ─────────────────────────────────────────────────────────
-              Classic black-on-white cartographic aesthetic.
-              All labels (countries, continents, cities) are in English.
-              Free to use with attribution. No API key required.
-              URL pattern: /stamen_toner_lite/{z}/{x}/{y}{r}.png
-            */}
             <TileLayer
-             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-               subdomains="abcd"
-/>
+              url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+              attribution='© <a href="https://carto.com/">CARTO</a>'
+              subdomains="abcd"
+            />
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+              subdomains="abcd"
+            />
 
             {!loading && visibleCountries.map((c) => (
               <CircleMarker
